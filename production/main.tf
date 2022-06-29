@@ -27,14 +27,14 @@ module "network" {
   availability_zones   = var.availability_zones
 }
 
-module "iam" {
+# module "iam" {
   
-  source = "../modules/iam"
-  # Cloud Posse recommends pinning every module to a specific version
-  # version     = "x.x.x"
-  name       = "moh"
-  user_name  = "moh@companyname.com"
-  pgp_key    = "keybase:moh"
-# groups     = ["admins"]
+#   source = "../modules/iam"
+#   # Cloud Posse recommends pinning every module to a specific version
+#   # version     = "x.x.x"
+#   name       = "moh"
+#   user_name  = "moh@companyname.com"
+#   pgp_key    = "keybase:moh"
+# # groups     = ["admins"]
 
-}
+# }

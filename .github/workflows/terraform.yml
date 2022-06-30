@@ -7,6 +7,12 @@ on:
 
 permissions:
   contents: read
+  
+env: 
+  AWS_REGION: ${{ secrets.AWS_REGION }}       
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.$AWS_SECRET_ACCESS_KEY }}
+  AWS_CREDS_DIRECTORY: ~/.aws
 
 jobs:
   terraform:
@@ -26,14 +32,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
       
-    - name: Install Terraform
-      env:
-            TERRAFORM_VERSION: "1.2.3"
-      run: |
-        tf_version=$TERRAFORM_VERSION
-        wget https://releases.hashicorp.com/terraform/"$tf_version"/terraform_"$tf_version"_linux_amd64.zip
-        unzip terraform_"$tf_version"_linux_amd64.zip
-        sudo mv terraform /usr/local/bin/
+#     - name: Install Terraform
+#       env:
+#             TERRAFORM_VERSION: "1.2.3"
+#       run: |
+#         tf_version=$TERRAFORM_VERSION
+#         wget https://releases.hashicorp.com/terraform/"$tf_version"/terraform_"$tf_version"_linux_amd64.zip
+#         unzip terraform_"$tf_version"_linux_amd64.zip
+#         sudo mv terraform /usr/local/bin/
 
 #      Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
 #     - name: Setup Terraform
@@ -46,18 +52,19 @@ jobs:
        - name: Log Into AWS
          run: | 
           if [ -d "$HC_AWS_CREDS_DIRECTORY" ]; then sudo rm -Rf $HC_AWS_CREDS_DIRECTORY; fi
-          aws configure set aws_access_key_id $GLOBAL_DEVSTAGE_IAM_ACCESSKEY
-          aws configure set aws_secret_access_key $GLOBAL_DEVSTAGE_IAM_SECRET
-          aws configure set default.region $GLOBAL_AWS_REGION
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set default.region $AWS_REGION
    
-  Terraform commands:
+  terraform-commands:
        runs-on: self-hosted
        needs: [log-into-aws]
        steps:
        
   # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
        - name: Terraform Init
-         run: terraform init -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" -backend-config="region=us-east-1" 
+         run: terraform init
+#        run: terraform init -backend-config="access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" -backend-config="secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" -backend-config="region=us-east-1" 
 
 
     # Checks that all Terraform configuration files adhere to a canonical format
@@ -66,10 +73,10 @@ jobs:
 
     # Generates an execution plan for Terraform
        - name: Terraform Plan
-         env:
-           TF_ACTION_WORKING_DIR: '/production'
-           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          env:
+#            TF_ACTION_WORKING_DIR: '/production'
+#            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
          run: terraform plan -input=false
       
        - name: Terraform Plan Status
@@ -78,8 +85,8 @@ jobs:
 
       # On push to "main", build or change infrastructure according to Terraform configuration files
        - name: Terraform Apply
-         env:
-           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }} # Aws access key for a valid service account for Terraform
-           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # Aws Secret access key for a valid service account for Terraform
+#          env:
+#            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }} # Aws access key for a valid service account for Terraform
+#            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # Aws Secret access key for a valid service account for Terraform
          if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
          run: terraform apply -auto-approve -input=false

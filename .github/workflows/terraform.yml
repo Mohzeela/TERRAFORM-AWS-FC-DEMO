@@ -56,10 +56,10 @@ jobs:
           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
           aws configure set default.region $AWS_REGION
    
-  terraform-commands:
-       runs-on: self-hosted
-       needs: [log-into-aws]
-       steps:
+#   terraform-commands:
+#        runs-on: self-hosted
+#        needs: [log-into-aws]
+#        steps:
        
   # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
        - name: Terraform Init

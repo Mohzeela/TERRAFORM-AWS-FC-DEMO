@@ -82,4 +82,4 @@ jobs:
 #            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }} # Aws access key for a valid service account for Terraform
 #            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # Aws Secret access key for a valid service account for Terraform
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform apply -auto-approve -input=false
+      run: terraform destroy -auto-approve -input=false

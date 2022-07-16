@@ -1,0 +1,72 @@
+ame: 'Terraform workflow for FinChoice'
+
+on:
+# push:
+# branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env: 
+  AWS_REGION: ${{ secrets.AWS_REGION }}       
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_CREDS_DIRECTORY: ~/.aws
+
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: self-hosted
+    environment: production
+    
+    defaults:
+      run:
+        shell: bash
+       
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v3
+      
+      
+# log-into-aws:
+#   runs-on: eks-devstage-vm
+#   steps:
+
+    - name: Log Into AWS
+      run: |  
+          if [ -d "$AWS_CREDS_DIRECTORY" ]; then sudo rm -Rf $AWS_CREDS_DIRECTORY; fi       
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set default.region $AWS_REGION
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Lint
+      run:  |
+           terraform init
+           terraform fmt -diff -recursive -check .
+           terraform validate
+
+
+    # Generates an execution plan for Terraform
+    - name: Terraform Plan
+      run: terraform plan -input=false
+      
+    - name: Terraform Plan Status
+      if: steps.plan.outcome == 'failure'
+      run: exit 1
+
+    - name: Terraform Apply
+#     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: terraform apply -auto-approve -input=false
+
+    - name: Clean Workspace
+      run: |
+         if [ -d "$AWS_CREDS_DIRECTORY" ]; then sudo rm -Rf $AWS_CREDS_DIRECTORY; fi  
+         rm -rf "${{ github.workspace }}"
+      shell: bash

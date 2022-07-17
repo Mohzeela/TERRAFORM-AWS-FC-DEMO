@@ -6,13 +6,13 @@
 #   name               = var.alb_name
 #   internal           = var.internal_alb
 #   load_balancer_type = var.load_balancer_type
- 
+
 #   # count              = "${length(var.alb_security_groups)}"
 #   security_groups    = var.security_groups
-  
+
 #   subnets            = var.public_subnets_cidr
 #   idle_timeout       = var.idle_timeout
-  
+
 
 #   access_logs {
 #     bucket  = var.s3_bucket
@@ -31,7 +31,7 @@
 #   port     = var.svc_port
 #   protocol = "HTTP"
 #   vpc_id   = aws_vpc.vpc.id
- 
+
 #   tags = {    
 #     name = var.target_group_name   
 #   }   
@@ -65,7 +65,7 @@
 #   load_balancer_arn = aws_lb.alb.arn
 #   port              = var.alb_listener_port
 #   protocol          = var.alb_listener_protocol
- 
+
 #   default_action {
 #     type             = "forward"
 #     target_group_arn = aws_alb_target_group.alb_target_group.arn
@@ -99,7 +99,7 @@
 # #     protocol  = "-1"
 # #     self      = true
 # #   }
-  
+
 # #   egress {
 # #     from_port = "0"
 # #     to_port   = "0"
@@ -123,7 +123,7 @@
 # #     protocol  = "-1"
 # #     self      = true
 # #   }
-  
+
 # #   egress {
 # #     from_port = "0"
 # #     to_port   = "0"

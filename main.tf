@@ -25,8 +25,8 @@ module "network" {
   public_subnets_cidr  = var.public_subnets_cidr
   private_subnets_cidr = var.private_subnets_cidr
   availability_zones   = var.availability_zones
-  
- 
+
+
 }
 
 # module "instance" {
@@ -34,8 +34,8 @@ module "network" {
 #   vpc_id = module.network.vpc_id
 #   sg_id = module.network.sg_id
 #   subnet_id = module.network.subnet_id
- 
- 
+
+
 # }
 # module "iam" {
 

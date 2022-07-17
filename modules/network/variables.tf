@@ -1,6 +1,6 @@
 variable "region" {
   description = "AWS Deployment region.."
-  default = ""
+  default     = ""
 }
 
 variable "vpc_cidr" {
@@ -19,21 +19,21 @@ variable "environment" {
 
 variable "private_subnets_cidr" {
   description = "The IP address range of the VPC's secondary address range in CIDR notation. A prefix of /16 is recommended. Do not use a prefix higher than /27."
-  type        =  list(string)
+  type        = list(string)
   default     = []
 }
 
 variable "public_subnets_cidr" {
   description = "The IP address range of the VPC's secondary address range in CIDR notation. A prefix of /16 is recommended. Do not use a prefix higher than /27."
-  type        =  list(string)
-  default     =  []
+  type        = list(string)
+  default     = []
 }
 
 variable "availability_zones" {
-  
+
   description = "Availability zone for the resources"
-  type        =  list(string)
-  default     =  []
+  type        = list(string)
+  default     = []
 
 }
 

@@ -30,33 +30,35 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
       
-      
-# log-into-aws:
-#   runs-on: eks-devstage-vm
-#   steps:
 
+  log-into-aws:
+    name: 'log into aws'
+    runs-on: self-hosted
+    environment: production
+    steps:
     - name: Log Into AWS
       run: |  
+          rm -rf .terraform
           if [ -d "$AWS_CREDS_DIRECTORY" ]; then sudo rm -Rf $AWS_CREDS_DIRECTORY; fi       
           aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
           aws configure set default.region $AWS_REGION
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-    - name: Terraform Init
-      run: |
-          rm -rf .terraform
-          terraform init
-
+  tf-init-plan:
+    name: 'Initialize, validate and plan'
+    runs-on: self-hosted
+    environment: production
+    steps:
+    - name: terraform init
+      run: terraform init -input=false
+          
+         
     - name: Terraform Lint
       run:  |
-           terraform init
-           terraform validate
-          #  terraform fmt -diff -recursive -check .
-          #  terraform validate
+          terraform fmt --recursive 
+          terraform validate
 
-
-    # Generates an execution plan for Terraform
     - name: Terraform Plan
       run: terraform plan -input=false
       
@@ -68,8 +70,4 @@ jobs:
 #     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: terraform apply -auto-approve -input=false
 
-    # - name: Clean Workspace
-    #   run: |
-    #      if [ -d "$AWS_CREDS_DIRECTORY" ]; then sudo rm -Rf $AWS_CREDS_DIRECTORY; fi  
-    #      rm -rf "${{ github.workspace }}"
-    #   shell: bash
+  

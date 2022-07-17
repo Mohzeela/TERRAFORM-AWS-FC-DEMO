@@ -1,4 +1,4 @@
-name: 'Terraform workflow for FinChoice'
+name: 'Tform workflow for FinChoice'
 
 on:
 # push:

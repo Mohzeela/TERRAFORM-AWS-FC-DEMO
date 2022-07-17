@@ -68,8 +68,8 @@ jobs:
 #     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: terraform apply -auto-approve -input=false
 
-    - name: Clean Workspace
-      run: |
-         if [ -d "$AWS_CREDS_DIRECTORY" ]; then sudo rm -Rf $AWS_CREDS_DIRECTORY; fi  
-         rm -rf "${{ github.workspace }}"
-      shell: bash
+    # - name: Clean Workspace
+    #   run: |
+    #      if [ -d "$AWS_CREDS_DIRECTORY" ]; then sudo rm -Rf $AWS_CREDS_DIRECTORY; fi  
+    #      rm -rf "${{ github.workspace }}"
+    #   shell: bash

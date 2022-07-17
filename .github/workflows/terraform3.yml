@@ -51,8 +51,9 @@ jobs:
     - name: Terraform Lint
       run:  |
            terraform init
-           terraform fmt -diff -recursive -check .
            terraform validate
+          #  terraform fmt -diff -recursive -check .
+          #  terraform validate
 
 
     # Generates an execution plan for Terraform

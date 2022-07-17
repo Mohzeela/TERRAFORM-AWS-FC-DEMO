@@ -59,6 +59,13 @@ jobs:
           terraform fmt --recursive
           terraform validate
 
+    - name: Test with Checkov
+      id: checkov
+      uses: bridgecrewio/checkov-action@master
+      with:
+        directory: /
+        framework: terraform 
+
     - name: Terraform Plan
       run: terraform plan -input=false
       

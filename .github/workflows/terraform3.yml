@@ -18,7 +18,7 @@ jobs:
   terraform:
     name: 'Terraform'
     runs-on: self-hosted
-    environment: production
+  
     
     defaults:
       run:
@@ -33,7 +33,6 @@ jobs:
   log-into-aws:
     name: 'log into aws'
     runs-on: self-hosted
-    environment: production
     steps:
     - name: Log Into AWS
       run: |  
@@ -47,7 +46,7 @@ jobs:
   tf-init-plan:
     name: 'Initialize, validate and plan'
     runs-on: self-hosted
-    environment: production
+    environment: init
     needs: ["log-into-aws"]
     steps:
     - name: terraform init
@@ -76,7 +75,7 @@ jobs:
   terraform-apply:
     name: terraform apply
     runs-on: self-hosted
-    environment: production
+    environment: apply
     needs: ["tf-init-plan", "log-into-aws"]
     steps:
     - name: Terraform Apply
